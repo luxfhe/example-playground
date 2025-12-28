@@ -6,7 +6,7 @@ task("task:vote")
     .addParam("option", "Option to choose")
     .addOptionalParam("account", "Specify which account [0, 9]", "0")
     .setAction(async function (taskArguments: TaskArguments, hre) {
-        const { fhenixjs, ethers, deployments } = hre;
+        const { luxfhejs, ethers, deployments } = hre;
 
         const Voting = await deployments.get("Voting");
 
@@ -17,13 +17,13 @@ task("task:vote")
 
         console.log(`contract at: ${Voting.address}, for signer: ${signer.address}`);
 
-        if (hre.network.name === "localfhenix") {
+        if (hre.network.name === "localluxfhe") {
             if (await signer.getBalance() < ethers.utils.parseEther("1.0")) {
-               await fhenixjs.getFunds(signer.address);
+               await luxfhejs.getFunds(signer.address);
             }
         }
 
-        const eOption = await fhenixjs.encrypt_uint8(Number(taskArguments.option));
+        const eOption = await luxfhejs.encrypt_uint8(Number(taskArguments.option));
         let contractWithSigner = voting.connect(signer) as unknown as Voting;
 
         console.time("voteDuration");

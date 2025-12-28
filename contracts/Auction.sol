@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.13 <0.9.0;
 
-import { inEuint32, euint32, FHE } from "@fhenixprotocol/contracts/FHE.sol";
+import { inEuint32, euint32, FHE } from "@luxfhe/contracts/FHE.sol";
 import { IFHERC20 } from "./IFHERC20.sol";
 import "./ConfAddress.sol";
 
@@ -20,15 +20,15 @@ contract Auction {
     Eaddress internal highestBidder;
     euint32 internal eMaxEuint32;
     uint256 public auctionEndTime;
-    IFHERC20 internal _wfhenix;
+    IFHERC20 internal _wluxfhe;
 
     // When auction is ended this will contain the PLAINTEXT winner address
     address public winnerAddress;
 
     event AuctionEnded(address winner, uint32 bid);
 
-    constructor(address wfhenix, uint256 biddingTime) payable {
-        _wfhenix = IFHERC20(wfhenix);
+    constructor(address wluxfhe, uint256 biddingTime) payable {
+        _wluxfhe = IFHERC20(wluxfhe);
         auctioneer = payable(msg.sender);
         auctionEndTime = block.timestamp + biddingTime;
         CONST_0_ENCRYPTED = FHE.asEuint32(0);
@@ -93,7 +93,7 @@ contract Auction {
     auctionNotEnded
     {
 
-        euint32 spent = _wfhenix.transferFromEncrypted(msg.sender, address(this), amount);
+        euint32 spent = _wluxfhe.transferFromEncrypted(msg.sender, address(this), amount);
 
         euint32 newBid = updateHistory(msg.sender, spent);
         // Can't update here highestBid directly because we need and indication whether the highestBid was changed
@@ -157,6 +157,6 @@ contract Auction {
 
         auctionHistory[msg.sender].refunded = true;
 
-        _wfhenix.transferEncrypted(msg.sender, toBeRedeemed);
+        _wluxfhe.transferEncrypted(msg.sender, toBeRedeemed);
     }
 }

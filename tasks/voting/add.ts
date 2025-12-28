@@ -5,7 +5,7 @@ task("task:addCount")
     .addParam("amount", "Amount to add to the counter (plaintext number)")
     .addParam("account", "Specify which account [0, 9]")
     .setAction(async function (taskArguments: TaskArguments, hre) {
-        const { fhenixjs, ethers, deployments } = hre;
+        const { luxfhejs, ethers, deployments } = hre;
         const [signer] = await ethers.getSigners();
         let signerAddress = await signer.getAddress();
 
@@ -17,7 +17,7 @@ task("task:addCount")
 
         console.log(`contract at: ${Counter.address}, for signer: ${signers[taskArguments.account].address}`);
 
-        const eAmount = await fhenixjs.encrypt_uint32(Number(taskArguments.amount));
+        const eAmount = await luxfhejs.encrypt_uint32(Number(taskArguments.amount));
 
         await counter.connect(signers[Number(taskArguments.account)]).add(eAmount);
 

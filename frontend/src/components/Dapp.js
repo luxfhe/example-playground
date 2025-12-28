@@ -9,7 +9,7 @@ import { BrowserProvider } from 'ethers';
 import TokenArtifact from "../contracts/FHERC20.json";
 import contractAddress from "../contracts/FHERC20_DEPLOY.json";
 
-import { FhenixClient, getPermit } from "fhenixjs";
+import { LuxFHEClient, getPermit } from "luxfhejs";
 
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
@@ -46,7 +46,7 @@ export function Dapp() {
   const [transactionError, setTransactionError] = useState(undefined);
   const [networkError, setNetworkError] = useState(undefined);
   const [contract, setContract] = useState(undefined);
-  const [fhenixClient, setFhenixClient] = useState(undefined);
+  const [luxfheClient, setLuxFHEClient] = useState(undefined);
   const [permit, setPermit] = useState(undefined);
 
   useEffect(() => {
@@ -139,7 +139,7 @@ export function Dapp() {
 
   const updateBalance = async () => {
     const balanceSealed = await this._token.balanceOfEncrypted(this.state.selectedAddress, this._permit);
-    const balance = this._fhenixClient.unseal(contractAddress.address, balanceSealed);
+    const balance = this._luxfheClient.unseal(contractAddress.address, balanceSealed);
     this.setState({ balance });
   }
 
@@ -175,13 +175,13 @@ export function Dapp() {
 
   useEffect(() => {
     const updateBalance = async () => {
-      if (contract && selectedAddress && fhenixClient && permit) {
+      if (contract && selectedAddress && luxfheClient && permit) {
         try {
           console.log(`getting balance: ${selectedAddress}, permit = ${JSON.stringify(permit)}`);
           const balanceSealed = await contract.balanceOfEncrypted(selectedAddress, permit);
           console.log(`balance sealed: ${balanceSealed}`);
-          fhenixClient.storePermit(permit);
-          const balance = fhenixClient.unseal(contractAddress.address, balanceSealed);
+          luxfheClient.storePermit(permit);
+          const balance = luxfheClient.unseal(contractAddress.address, balanceSealed);
           console.log(`balance: ${balance}`)
           setBalance(balance);
         } catch (e) {
@@ -192,7 +192,7 @@ export function Dapp() {
     }
 
     updateBalance();
-  }, [contract, selectedAddress, permit, fhenixClient]);
+  }, [contract, selectedAddress, permit, luxfheClient]);
 
   const initialize = async (userAddress) => {
     setSelectedAddress(userAddress);
@@ -201,12 +201,12 @@ export function Dapp() {
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(contractAddress.address, TokenArtifact.abi, signer);
     setContract(contract);
-    const fhenixClient = new FhenixClient({provider});
-    setFhenixClient(fhenixClient);
+    const luxfheClient = new LuxFHEClient({provider});
+    setLuxFHEClient(luxfheClient);
     console.log(`loading permit for ${contractAddress.address}`);
     let permit = await getPermit(contractAddress.address, provider);
     if (!permit) {
-      permit = await fhenixClient.generatePermit(
+      permit = await luxfheClient.generatePermit(
         contractAddress.address,
         undefined,
         signer
@@ -428,7 +428,7 @@ export function Dapp() {
 //     // We first initialize ethers by creating a provider using window.ethereum
 //     this._provider = new BrowserProvider(window.ethereum);
 //
-//     this._fhenixClient = new FhenixClient({provider: this._provider});
+//     this._luxfheClient = new LuxFHEClient({provider: this._provider});
 //
 //     let signer = await this._provider.getSigner();
 //
@@ -440,7 +440,7 @@ export function Dapp() {
 //       signer
 //     );
 //
-//     this._permit = await this._fhenixClient.generatePermit(
+//     this._permit = await this._luxfheClient.generatePermit(
 //       contractAddress.address,
 //       undefined,
 //       signer
@@ -477,7 +477,7 @@ export function Dapp() {
 //
 //   async _updateBalance() {
 //     const balanceSealed = await this._token.balanceOfEncrypted(this.state.selectedAddress, this._permit);
-//     const balance = this._fhenixClient.unseal(contractAddress.address, balanceSealed);
+//     const balance = this._luxfheClient.unseal(contractAddress.address, balanceSealed);
 //     this.setState({ balance });
 //   }
 //
