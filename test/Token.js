@@ -1,4 +1,4 @@
-// This doesn't work yet - need to refactor to take into account localfhenix
+// This doesn't work yet - need to refactor to take into account localluxfhe
 
 // // This is an example test file. Hardhat will run every *.js file in `test/`,
 // // so feel free to add new ones.
@@ -31,9 +31,9 @@
 //     const Counter = await ethers.getContractFactory("Counter");
 //     const [owner, addr1, addr2] = await ethers.getSigners();
 //
-//     const {fhenixjs} = hre.fhenixjs;
+//     const {luxfhejs} = hre.luxfhejs;
 //
-//     await fhenixjs.utils.getFunds(owner);
+//     await luxfhejs.utils.getFunds(owner);
 //
 //     // To deploy our contract, we just have to call Token.deploy() and await
 //     // for it to be deployed(), which happens onces its transaction has been
@@ -43,7 +43,7 @@
 //     await hardhatToken.deployed();
 //
 //     // Fixtures can return anything you consider useful for your tests
-//     return { Counter: Counter, hardhatToken, owner, addr1, addr2, fhenixjs };
+//     return { Counter: Counter, hardhatToken, owner, addr1, addr2, luxfhejs };
 //   }
 //
 //   // You can nest describe calls to create subsections.
@@ -76,7 +76,7 @@
 //     it("Should add 10 to the counter", async function () {
 //       const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
 //
-//       let x = await fhenixjs.client.encrypt_uint32(10);
+//       let x = await luxfhejs.client.encrypt_uint32(10);
 //
 //       expect(await hardhatToken.add(x.data)).not.to.be.reverted;
 //     });

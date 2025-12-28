@@ -11,7 +11,7 @@ devDependencies:
   '@ethersproject/providers':
     specifier: ^5.7.2
     version: 5.7.2
-  '@fhenixprotocol/contracts':
+  '@luxfheprotocol/contracts':
     specifier: 0.1.0-beta.3
     version: 0.1.0-beta.3
   '@nomicfoundation/hardhat-chai-matchers':
@@ -38,10 +38,10 @@ devDependencies:
   dotenv:
     specifier: ^16.4.2
     version: 16.4.2
-  fhenix-hardhat-docker:
+  luxfhe-hardhat-docker:
     specifier: 0.1.0-beta.15
     version: 0.1.0-beta.15(hardhat@2.19.5)
-  fhenix-hardhat-plugin:
+  luxfhe-hardhat-plugin:
     specifier: 0.1.0-beta.15
     version: 0.1.0-beta.15(hardhat@2.19.5)
   hardhat:
@@ -436,7 +436,7 @@ packages:
     engines: {node: '>=14'}
     dev: true
 
-  /@fhenixprotocol/contracts@0.1.0-beta.3:
+  /@luxfheprotocol/contracts@0.1.0-beta.3:
     resolution: {integrity: sha512-d7gFgTPX++VfMs450CM1gR0tCRhs7FyWU1tgf3i+wJWwLmtjMM+6pKM67+xHoRbMq7TuGRzAEZEurk3rpIfkJg==}
     dependencies:
       '@openzeppelin/contracts': 5.0.1
@@ -2178,7 +2178,7 @@ packages:
       reusify: 1.0.4
     dev: true
 
-  /fhenix-hardhat-docker@0.1.0-beta.15(hardhat@2.19.5):
+  /luxfhe-hardhat-docker@0.1.0-beta.15(hardhat@2.19.5):
     resolution: {integrity: sha512-RLHi/LUhTO8KEmKrRN17mI8y7NI10c8DmOcwv4Ztkk0p4onVXFKoTYv0QnWEoqMfAoA6+jZ7oNK6/2zvV6avkw==}
     peerDependencies:
       hardhat: ^2.0.0
@@ -2187,13 +2187,13 @@ packages:
       hardhat: 2.19.5(ts-node@10.9.2)(typescript@5.3.3)
     dev: true
 
-  /fhenix-hardhat-plugin@0.1.0-beta.15(hardhat@2.19.5):
+  /luxfhe-hardhat-plugin@0.1.0-beta.15(hardhat@2.19.5):
     resolution: {integrity: sha512-9wLA9l3BQzJsuhxNlXMvjEn5kGGSk6nWBr4eX3t07eZaL0qctIDRk+bq4INSWZ1NMq2rmEwIsjA1lczSzAXMRg==}
     peerDependencies:
       hardhat: ^2.0.0
     dependencies:
       axios: 1.6.7
-      fhenixjs: 0.1.0-beta.5
+      luxfhejs: 0.1.0-beta.5
       hardhat: 2.19.5(ts-node@10.9.2)(typescript@5.3.3)
     transitivePeerDependencies:
       - bufferutil
@@ -2201,7 +2201,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /fhenixjs@0.1.0-beta.5:
+  /luxfhejs@0.1.0-beta.5:
     resolution: {integrity: sha512-Bp++KetxeckF+dOwCQwsN76JeYJ+2nZuV2n+AAdQrE+N0C/FlEFx45Y4omlKEea1F6ASWmPfA4CHVPUgkAIRRg==}
     dependencies:
       ethers: 6.10.0

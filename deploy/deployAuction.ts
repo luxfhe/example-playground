@@ -2,13 +2,13 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-    const { fhenixjs, ethers } = hre;
+    const { luxfhejs, ethers } = hre;
     const { deploy } = hre.deployments;
     const [signer] = await ethers.getSigners();
 
-    if (hre.network.name === "localfhenix") {
+    if (hre.network.name === "localluxfhe") {
         if (await signer.getBalance() < ethers.utils.parseEther("1.0")) {
-            await fhenixjs.getFunds(signer.address);
+            await luxfhejs.getFunds(signer.address);
         }
     }
 

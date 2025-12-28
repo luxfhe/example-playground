@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./FHERC20.sol";
-import { FHE, euint32, inEuint32 } from "@fhenixprotocol/contracts/FHE.sol";
+import { FHE, euint32, inEuint32 } from "@luxfhe/contracts/FHE.sol";
 import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract ExampleToken is FHERC20, AccessControl {

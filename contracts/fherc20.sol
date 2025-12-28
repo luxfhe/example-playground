@@ -2,8 +2,8 @@
 pragma solidity ^0.8.20;
 
 import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import { FHE, euint32, inEuint32 } from "@fhenixprotocol/contracts/FHE.sol";
-import { Permissioned, Permission } from "@fhenixprotocol/contracts/access/Permissioned.sol";
+import { FHE, euint32, inEuint32 } from "@luxfhe/contracts/FHE.sol";
+import { Permissioned, Permission } from "@luxfhe/contracts/access/Permissioned.sol";
 
 import { IFHERC20 } from "./IFHERC20.sol";
 
