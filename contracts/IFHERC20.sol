@@ -4,8 +4,8 @@ pragma solidity ^0.8.20;
 // LuxFHE Protocol (last updated v0.1.0) (token/FHERC20/IFHERC20.sol)
 // Inspired by OpenZeppelin (https://github.com/OpenZeppelin/openzeppelin-contracts) (token/ERC20/IERC20.sol)
 
-import { Permission, Permissioned } from "@luxfhe/contracts/access/Permissioned.sol";
-import { euint32, inEuint32 } from "@luxfhe/contracts/FHE.sol";
+import { Permission, Permissioned } from "@luxfi/contracts/fhe/access/Permissioned.sol";
+import { euint32, Euint32 } from "@luxfi/contracts/fhe/FHE.sol";
 
 /**
  * @dev Interface of the ERC-20 standard as defined in the ERC.
@@ -42,7 +42,7 @@ interface IFHERC20 {
      *
      * Emits a {TransferEncrypted} event.
      */
-    function transferEncrypted(address to, inEuint32 calldata value) external returns (euint32);
+    function transferEncrypted(address to, Euint32 calldata value) external returns (euint32);
     function transferEncrypted(address to, euint32 value) external returns (euint32);
 
     /**
@@ -69,7 +69,7 @@ interface IFHERC20 {
      *
      * Emits an {ApprovalEncrypted} event.
      */
-    function approveEncrypted(address spender, inEuint32 calldata value) external returns (bool);
+    function approveEncrypted(address spender, Euint32 calldata value) external returns (bool);
 
     /**
      * @dev Moves a `value` amount of tokens from `from` to `to` using the
@@ -80,6 +80,6 @@ interface IFHERC20 {
      *
      * Emits a {TransferEncrypted} event.
      */
-    function transferFromEncrypted(address from, address to, inEuint32 calldata value) external returns (euint32);
+    function transferFromEncrypted(address from, address to, Euint32 calldata value) external returns (euint32);
     function transferFromEncrypted(address from, address to, euint32 value) external returns (euint32);
 }

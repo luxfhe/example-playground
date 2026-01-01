@@ -9,7 +9,7 @@ import { BrowserProvider } from 'ethers';
 import TokenArtifact from "../contracts/FHERC20.json";
 import contractAddress from "../contracts/FHERC20_DEPLOY.json";
 
-import { LuxFHEClient, getPermit } from "luxfhejs";
+import { LuxFHEClient, getPermit } from "@luxfhe/sdk";
 
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
