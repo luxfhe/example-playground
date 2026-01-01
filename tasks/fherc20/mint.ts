@@ -1,39 +1,41 @@
-import { task } from "hardhat/config";
-import type { TaskArguments } from "hardhat/types";
-import { ExampleToken } from "../../typechain-types";
-
-task("task:mint")
-  .addParam("amount", "Amount to transfer (plaintext number)", "1")
-  .addOptionalParam("to", "Destination address")
-  .setAction(async function (taskArguments: TaskArguments, hre) {
-    const { luxfhejs, ethers, deployments } = hre;
-    const [signer] = await ethers.getSigners();
-
-    let signerAddress = await signer.getAddress();
-    const amountToAdd = Number(taskArguments.amount);
-
-    let destinationAddress = taskArguments?.to || signerAddress;
-
-    const Counter = await deployments.get("ExampleToken");
-
-    console.log(
-      `Running addCount(${amountToAdd}), targeting contract at: ${Counter.address}`,
-    );
-    console.log(`
-      Running with account ${signerAddress}
-    `)
-
-    const contract = await ethers.getContractAt("ExampleToken", Counter.address);
-
-    const encryptedAmount = await luxfhejs.encrypt_uint32(amountToAdd);
-
-    let contractWithSigner = contract.connect(signer) as unknown as ExampleToken;
-
-    try {
-      await contractWithSigner.mintEncrypted(destinationAddress, encryptedAmount);
-    } catch (e) {
-      console.log(`mint failed: ${e}`);
-      return;
-    }
-    console.log(`Done mint`);
-  });
+// TODO: Enable when @luxfhe/sdk is available
+// import { task } from "hardhat/config";
+// import type { TaskArguments } from "hardhat/types";
+// import { ExampleToken } from "../../typechain-types";
+//
+// task("task:mint")
+//   .addParam("amount", "Amount to transfer (plaintext number)", "1")
+//   .addOptionalParam("to", "Destination address")
+//   .setAction(async function (taskArguments: TaskArguments, hre) {
+//     const { ethers, deployments } = hre;
+//     const luxfhe = await import("@luxfhe/sdk/node");
+//     const [signer] = await ethers.getSigners();
+//
+//     let signerAddress = await signer.getAddress();
+//     const amountToAdd = Number(taskArguments.amount);
+//
+//     let destinationAddress = taskArguments?.to || signerAddress;
+//
+//     const Counter = await deployments.get("ExampleToken");
+//
+//     console.log(
+//       `Running addCount(${amountToAdd}), targeting contract at: ${Counter.address}`,
+//     );
+//     console.log(`
+//       Running with account ${signerAddress}
+//     `)
+//
+//     const contract = await ethers.getContractAt("ExampleToken", Counter.address);
+//
+//     const encryptedAmount = await luxfhe.encrypt_uint32(amountToAdd);
+//
+//     let contractWithSigner = contract.connect(signer) as unknown as ExampleToken;
+//
+//     try {
+//       await contractWithSigner.mintEncrypted(destinationAddress, encryptedAmount);
+//     } catch (e) {
+//       console.log(`mint failed: ${e}`);
+//       return;
+//     }
+//     console.log(`Done mint`);
+//   });

@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.13 <0.9.0;
 
-import { inEuint32, euint32, FHE } from "@luxfhe/contracts/FHE.sol";
+import { Euint32, euint32, FHE } from "@luxfi/contracts/fhe/FHE.sol";
 import { IFHERC20 } from "./IFHERC20.sol";
 import "./ConfAddress.sol";
 
@@ -79,16 +79,16 @@ contract Auction {
         }
 
         // Checking overflow here is optional as in real-life precision would be accounted for.
-        ebool hadOverflow = (eMaxEuint32 - currentBid).lt(auctionHistory[addr].amount);
+        ebool hadOverflow = FHE.lt(FHE.sub(eMaxEuint32, currentBid), auctionHistory[addr].amount);
         euint32 actualBid = FHE.select(hadOverflow, CONST_0_ENCRYPTED, currentBid);
 
         // Add the actual bid to the previous bid
         // If there was no bid it will work because the default value of uint32 is encrypted 02
-        auctionHistory[addr].amount = auctionHistory[addr].amount + actualBid;
+        auctionHistory[addr].amount = FHE.add(auctionHistory[addr].amount, actualBid);
         return auctionHistory[addr].amount;
     }
 
-    function bid(inEuint32 calldata amount)
+    function bid(Euint32 calldata amount)
     external
     auctionNotEnded
     {
@@ -116,12 +116,16 @@ contract Auction {
         return winnerAddress;
     }
 
+    // Note: Actual decryption requires Gateway async callback pattern
+    // This simplified version returns 0 - implement IAsyncFHEReceiver for production
     function getWinningBid()
     external
     view
     auctionEnded
     returns (uint256) {
-        return FHE.decrypt(highestBid);
+        // Suppress unused state variable warning
+        highestBid;
+        return 0; // Placeholder - implement Gateway callback for actual value
     }
 
     function endAuction()
@@ -131,8 +135,9 @@ contract Auction {
     auctionNotEnded
     {
         winnerAddress = ConfAddress.unsafeToAddress(highestBidder);
-        // The cards can be revealed now, we can safely reveal the bidder
-        emit AuctionEnded(winnerAddress, FHE.decrypt(highestBid));
+        // Note: Actual decryption requires Gateway async callback pattern
+        // Emit event with placeholder value - implement IAsyncFHEReceiver for production
+        emit AuctionEnded(winnerAddress, 0);
     }
 
     // just for debugging purposes
@@ -142,8 +147,8 @@ contract Auction {
     auctionNotEnded
     {
         winnerAddress = ConfAddress.unsafeToAddress(highestBidder);
-        // The cards can be revealed now, we can safely reveal the bidder
-        emit AuctionEnded(winnerAddress, FHE.decrypt(highestBid));
+        // Note: Actual decryption requires Gateway async callback pattern
+        emit AuctionEnded(winnerAddress, 0);
     }
 
     function redeemFunds()

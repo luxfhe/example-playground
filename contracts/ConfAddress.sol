@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.13 <0.9.0;
 
-import { euint32, ebool, FHE } from "@luxfhe/contracts/FHE.sol";
+import { euint32, ebool, FHE } from "@luxfi/contracts/fhe/FHE.sol";
 import "./BytesLib.sol";
 
 /// @title Encrypted Address Library
@@ -20,7 +20,7 @@ library ConfAddress {
     /// @dev Iterates over 5 chunks of the address, applying a bitmask to each, then encrypting with `FHE`.
     /// @param addr The plain Ethereum address to encrypt
     /// @return eaddr The encrypted representation of the address
-    function toEaddress(address payable addr) internal pure returns (Eaddress memory) {
+    function toEaddress(address payable addr) internal returns (Eaddress memory) {
         uint160 addrValue = uint160(address(addr));
         /// @dev A bitmask constant for selecting specific 32-bit chunks from a 160-bit Ethereum address.
         /// It has the first 32 bits set to 1, and the remaining bits set to 0.
@@ -39,25 +39,17 @@ library ConfAddress {
         return eaddr;
     }
 
-    /// @notice Decrypts an `eaddress` to retrieve the original plaintext Ethereum address.
-    /// @dev This operation should be used with caution as it exposes the encrypted address.
-    /// @param eaddr The encrypted address to decrypt
-    /// @return The decrypted plaintext Ethereum address
+    /// @notice Placeholder for async decryption of an encrypted address.
+    /// @dev In production, implement IAsyncFHEReceiver for Gateway callback pattern.
+    ///      This simplified version returns address(0) as decryption requires async flow.
+    /// @param eaddr The encrypted address (unused in simplified version)
+    /// @return address(0) - implement Gateway callback for actual decryption
     function unsafeToAddress(Eaddress memory eaddr) internal pure returns (address) {
-        uint160 addrValue;
-        for (uint i = 0; i < 5; i++) {
-            uint32 currentChunkOffset = uint32((4 - i) * 32);
-            uint32 val = FHE.decrypt(eaddr.values[i]);
-            uint160 currentValue = uint160(val) << currentChunkOffset;
-            addrValue += currentValue;
-        }
-
-        bytes memory addrBz = new bytes(32);
-        assembly {
-            mstore(add(addrBz,32), addrValue)
-        }
-
-        return BytesLib.toAddress(addrBz, 12);
+        // Suppress unused parameter warning
+        eaddr;
+        // Note: Actual decryption requires Gateway async callback pattern
+        // In production, request decryption and handle result in callback
+        return address(0);
     }
 
     /// @notice Re-encrypts the encrypted values within an `eaddress`.
@@ -65,11 +57,12 @@ library ConfAddress {
     /// altering the underlying plaintext address, which can be useful for obfuscation purposes in storage.
     /// @param eaddr The encrypted address to re-encrypt
     /// @param ezero An encrypted zero value that triggers the re-encryption
-    function resestEaddress(Eaddress memory eaddr, euint32 ezero) internal pure {
+    function resestEaddress(Eaddress memory eaddr, euint32 ezero) internal returns (Eaddress memory) {
         for (uint i = 0; i < 5; i++) {
-            // Adding zero will practiaclly reencrypt the value without it being changed
-            eaddr.values[i] = eaddr.values[i] + ezero;
+            // Adding zero will practically reencrypt the value without it being changed
+            eaddr.values[i] = FHE.add(eaddr.values[i], ezero);
         }
+        return eaddr;
     }
 
     /// @notice Determines if an encrypted address is equal to a given plaintext Ethereum address.
@@ -77,11 +70,11 @@ library ConfAddress {
     /// @param lhs The encrypted address to compare
     /// @param addr The plaintext Ethereum address to compare against
     /// @return res A boolean indicating if the encrypted and plaintext addresses are equal
-    function equals(Eaddress storage lhs, address payable addr) internal view returns (ebool) {
+    function equals(Eaddress storage lhs, address payable addr) internal returns (ebool) {
         Eaddress memory rhs = toEaddress(addr);
         ebool res = FHE.eq(lhs.values[0], rhs.values[0]);
         for (uint i = 1; i < 5; i++) {
-            res = res & FHE.eq(lhs.values[i], rhs.values[i]);
+            res = FHE.and(res, FHE.eq(lhs.values[i], rhs.values[i]));
         }
 
         return res;
@@ -91,7 +84,7 @@ library ConfAddress {
         ebool condition,
         Eaddress memory eaddr,
         Eaddress memory newEaddr
-    ) internal pure returns (Eaddress memory) {
+    ) internal returns (Eaddress memory) {
         for (uint i = 0; i < 5; i++) {
             // Even if condition is false the ENCRYPTED value of eaddr.values[i] will be changed
             // because the encryption is not deterministic

@@ -1,31 +1,33 @@
-import { task } from "hardhat/config";
-import type { TaskArguments } from "hardhat/types";
-import { FHERC20 } from "../../typechain-types";
-
-task("task:getBalance").setAction(async function (
-  _taskArguments: TaskArguments,
-  hre,
-) {
-  const { luxfhejs, ethers, deployments } = hre;
-  const [signer] = await ethers.getSigners();
-
-  const erc20 = await deployments.get("FHERC20");
-  const address = await signer.getAddress();
-  console.log(`Running getCount, targeting contract at: ${erc20.address}`);
-
-  const contract = (await ethers.getContractAt(
-    "FHERC20",
-      erc20.address,
-  )) as unknown as unknown as FHERC20;
-
-  let permit = await luxfhejs.generatePermit(
-      erc20.address,
-    undefined, // use the internal provider
-    signer,
-  );
-
-  const sealedResult = await contract.balanceOfEncrypted(address, permit);
-  let unsealed = luxfhejs.unseal(erc20.address, sealedResult);
-
-  console.log(`got balance result: ${unsealed.toString()}`);
-});
+// TODO: Enable when @luxfhe/sdk is available
+// import { task } from "hardhat/config";
+// import type { TaskArguments } from "hardhat/types";
+// import { FHERC20 } from "../../typechain-types";
+// import * as luxfhe from "@luxfhe/sdk/node";
+//
+// task("task:getBalance").setAction(async function (
+//   _taskArguments: TaskArguments,
+//   hre,
+// ) {
+//   const { ethers, deployments } = hre;
+//   const [signer] = await ethers.getSigners();
+//
+//   const erc20 = await deployments.get("FHERC20");
+//   const address = await signer.getAddress();
+//   console.log(`Running getCount, targeting contract at: ${erc20.address}`);
+//
+//   const contract = (await ethers.getContractAt(
+//     "FHERC20",
+//       erc20.address,
+//   )) as unknown as FHERC20;
+//
+//   let permit = await luxfhe.generatePermit(
+//       erc20.address,
+//     undefined, // use the internal provider
+//     signer,
+//   );
+//
+//   const sealedResult = await contract.balanceOfEncrypted(address, permit);
+//   let unsealed = luxfhe.unseal(erc20.address, sealedResult);
+//
+//   console.log(`got balance result: ${unsealed.toString()}`);
+// });
